@@ -1,0 +1,7 @@
+counter.txt
+info.txt
+.env
+.venv/
+.mypy_cache
+/assets/chromedriver.exe
+__pycache__
