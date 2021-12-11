@@ -4,12 +4,26 @@ from captcha_bypass import hCaptcha
 from discord import Discord
 from dotenv import load_dotenv
 import os
+import subprocess
+from signal import SIGKILL
 
 
 load_dotenv()
 
 
 if __name__ == "__main__":
+    p = subprocess.Popen(['ps', '-A'], stdout=subprocess.PIPE)
+    out, err = p.communicate()
+
+    for line in out.splitlines():
+        line = line.decode()
+
+        if not 'chrome' in line:
+            continue
+
+        pid = int(line.split(None, 1)[0])
+        os.kill(pid, SIGKILL)
+
     count: int = 1
 
     if os.path.exists(os.getenv("FILE")):
