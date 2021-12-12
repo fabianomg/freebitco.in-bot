@@ -92,7 +92,7 @@ class hCaptcha:
 
             self.driver.execute_script("arguments[0].click();", login_button)
 
-            WDW(self.driver, 800).until(lambda _: len(self.element_visible(
+            WDW(self.driver, 900).until(lambda _: len(self.element_visible(
                 '//div[@class="h-captcha"]/iframe').get_attribute(
                     'data-hcaptcha-response')) > 0)
 
