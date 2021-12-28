@@ -2,34 +2,13 @@ from captcha_bypass import hCaptcha
 from discord import Discord
 from dotenv import load_dotenv
 import os
-import sched
-import time
 import subprocess
 
 
 load_dotenv()
 
 
-def do_something(sc, hcaptcha, count, discord):
-    count += 1
-
-    finished, balance = hcaptcha.freebitco(os.getenv("URL"))
-
-    if finished:
-        discord.send(
-            f":white_check_mark: (#{count}) Získávání dokončeno - {balance} BTC")
-    else:
-        discord.send(f"❌ (#{count}) Ukončeno - nedošlo k získání bitcoinů")
-
-    with open(os.getenv("FILE"), "w") as file:
-        file.write(str(count))
-
-    s.enter(1200, 1, do_something, (sc, hcaptcha, count, discord))
-
-
 if __name__ == "__main__":
-    s = sched.scheduler(time.time, time.sleep)
-
     p = subprocess.Popen(['ps', '-A'], stdout=subprocess.PIPE)
     out, err = p.communicate()
 
@@ -55,5 +34,14 @@ if __name__ == "__main__":
         "PASSWORD"), count, os.getenv("WEBDRIVER"), [os.getenv("EXTENSION"), os.getenv("PRIVACYPASS")])
     hcaptcha.download_userscript()
 
-    s.enter(5, 1, do_something, (s, hcaptcha, count, discord))
-    s.run()
+    count += 1
+
+    finished, balance = hcaptcha.freebitco(os.getenv("URL"))
+
+    if finished:
+        discord.send(f":white_check_mark: (#{count}) Získávání dokončeno - {balance} BTC")
+    else:
+        discord.send(f"❌ (#{count}) Ukončeno - nedošlo k získání bitcoinů")
+
+    with open(os.getenv("FILE"), "w") as file:
+        file.write(str(count))

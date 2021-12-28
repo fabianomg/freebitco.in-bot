@@ -160,6 +160,8 @@ class hCaptcha:
 
             sleep(1.5)
 
+            self.driver.quit()
+
             return (True, balance)
         except TE:
             self.driver.quit()
