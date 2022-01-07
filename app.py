@@ -3,7 +3,13 @@ from discord import Discord
 from dotenv import load_dotenv
 import os
 import subprocess
+import platform
 
+def isLinux() -> bool:
+    return platform.system().lower().startswith('lin')
+
+if isLinux():
+    from signal import SIGKILL
 
 load_dotenv()
 
@@ -19,7 +25,7 @@ if __name__ == "__main__":
             continue
 
         pid = int(line.split(None, 1)[0])
-        os.kill(pid, -9)
+        os.kill(pid, SIGKILL if isLinux() else -9)
 
     count: int = 1
 
