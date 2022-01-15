@@ -3,8 +3,8 @@
 I'm not responsible for you and your account on *freebitco.in* site. This script is against *freebitco.in* ToS and you **may get banned**.
 
 ## Requirements
-This script works only on devices with display, e.g. Ubuntu Desktop, Windows, ...
-Chromedriver
+* This script works only on devices with display, e.g. Ubuntu Desktop, Windows, ...
+* Chromedriver
 
 ## Installation - Ubuntu Desktop 20.04
 * Install packgaes
