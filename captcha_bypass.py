@@ -5,13 +5,22 @@ from selenium.webdriver.support.ui import WebDriverWait as WDW
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import sys
-from typing import Tuple, List
+from typing import Tuple, List, Any
 from time import sleep
 from discord import Discord
 
 
+# Credits: https://github.com/maximedrn/hcaptcha-solver-python-selenium
 class hCaptcha:
-    def __init__(self, webhook: str, email: str, password: str, count: int, webdriver: str = 'assets/chromedriver.exe', extensions: List[str] = ['assets/Tampermonkey.crx', 'assets/PrivacyPass.crx']) -> None:
+    def __init__(
+        self,
+        webhook: str,
+        email: str,
+        password: str,
+        count: int,
+        webdriver: str = 'assets/chromedriver.exe',
+        extensions: List[str] = ['assets/Tampermonkey.crx', 'assets/PrivacyPass.crx']
+    ) -> None:
         self.webdriver_path = webdriver
         self.extensions = extensions
         self.driver = self.webdriver()
@@ -23,7 +32,7 @@ class hCaptcha:
         self.discord = Discord(webhook)
         self.discord.send(f"🎈 (#{self.__count}) Captcha bypass započat")
 
-    def webdriver(self):
+    def webdriver(self) -> Any:
         options = webdriver.ChromeOptions()
 
         for extension in self.extensions:
@@ -46,7 +55,7 @@ class hCaptcha:
         WDW(self.driver, 5).until(EC.element_to_be_clickable(
             (By.XPATH, element))).click()
 
-    def element_visible(self, element: str):
+    def element_visible(self, element: str) -> Any:
         return WDW(self.driver, 20).until(EC.visibility_of_element_located(
             (By.XPATH, element)))
 
@@ -58,10 +67,9 @@ class hCaptcha:
     def download_userscript(self) -> None:
         try:
             self.discord.send(
-                f"🎈 (#{self.__count}) Zahájení instalace skriptu do prohlížeče")
+                f"🎈 (#{self.__count}) Installing hCaptcha script to browser")
             self.window_handles(1)
-            self.driver.get('https://greasyfork.org/en/scripts/425854-hcaptcha'
-                            '-solver-automatically-solves-hcaptcha-in-browser')
+            self.driver.get('https://greasyfork.org/en/scripts/425854-hcaptcha-solver-automatically-solves-hcaptcha-in-browser')
             self.element_clickable('//*[@id="install-area"]/a[1]')
             self.window_handles(2)
             self.element_clickable('//*[@value="Install"]')
@@ -69,10 +77,10 @@ class hCaptcha:
             self.driver.close()
             self.window_handles(0)
             self.discord.send(
-                f":white_check_mark: (#{self.__count}) Script nainstalován do prohlížeče")
+                f":white_check_mark: (#{self.__count}) Script was successfully installed to browser")
         except TE:
             self.discord.send(
-                f"❌ (#{self.__count}) Chyba při stahování skriptu do prohlížeče")
+                f"❌ (#{self.__count}) Failed when installing script to browser")
             sys.exit('Failed')
 
     def get_balance(self):
@@ -88,7 +96,7 @@ class hCaptcha:
 
         return balance
 
-    def element_exists(self, xpath):
+    def element_exists(self, xpath) -> bool:
         try:
             self.driver.find_element_by_xpath(xpath)
         except NoSuchElementException:
@@ -99,12 +107,12 @@ class hCaptcha:
     def freebitco(self, url: str) -> Tuple[bool, str]:
         try:
             self.discord.send(
-                f"🎈 (#{self.__count}) Započato řešení freebitco.in aplikace")
+                f"🎈 (#{self.__count}) Starting freebitco.in program")
             self.driver.get(url)
 
             if not self.get_balance():
                 self.discord.send(
-                    f"🎈 (#{self.__count}) Probíhá přihlášení do aplikace")
+                    f"🎈 (#{self.__count}) Trying to login to freebitco.in")
 
                 burger_menu = WDW(self.driver, 10).until(
                     EC.visibility_of_element_located((By.XPATH, '//*[@id="menu_drop"]/a')))
@@ -128,19 +136,19 @@ class hCaptcha:
                     "arguments[0].click();", login_button)
             else:
                 self.discord.send(
-                    f"🎈 (#{self.__count}) BOT je již přihlášen")
+                    f"🎈 (#{self.__count}) Program is already logged")
 
             sleep(5)
 
             if self.element_exists('//div[@class="h-captcha"]/iframe'):
                 self.discord.send(
-                    f"🎈 (#{self.__count}) Captcha nalezena, započato řešení")
+                    f"🎈 (#{self.__count}) hCaptcha found, trying to solve it")
 
                 WDW(self.driver, 900).until(lambda _: len(self.element_visible(
                     '//div[@class="h-captcha"]/iframe').get_attribute('data-hcaptcha-response')) > 0)
 
                 self.discord.send(
-                    f"🎈 (#{self.__count}) Captcha vyřešena, hledání tlačítka")
+                    f"🎈 (#{self.__count}) hCaptcha found and solved, fiding claim button")
 
                 roll_button = self.driver.find_element_by_xpath(
                     '//*[@id="free_play_form_button"]')
@@ -153,7 +161,7 @@ class hCaptcha:
                     '//*[@id="time_remaining"]')
 
                 self.discord.send(
-                    f"❌ (#{self.__count}) Zbývající čas do dalšího možného rollu: " + ":".join([x.text for x in time_remaining.find_elements(
+                    f"❌ (#{self.__count}) Remaining time to new roll: " + ":".join([x.text for x in time_remaining.find_elements(
                         By.CLASS_NAME, 'countdown_amount')]))
 
             balance = self.get_balance()

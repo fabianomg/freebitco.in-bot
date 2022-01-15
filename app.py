@@ -45,9 +45,9 @@ if __name__ == "__main__":
     finished, balance = hcaptcha.freebitco(os.getenv("URL"))
 
     if finished:
-        discord.send(f":white_check_mark: (#{count}) Získávání dokončeno - {balance} BTC")
+        discord.send(f":white_check_mark: (#{count}) Program finished - {balance} BTC")
     else:
-        discord.send(f"❌ (#{count}) Ukončeno - nedošlo k získání bitcoinů")
+        discord.send(f"❌ (#{count}) Program failed")
 
     with open(os.getenv("FILE"), "w") as file:
         file.write(str(count))
