@@ -1,0 +1,5 @@
+wheel
+bs4
+selenium
+python_dotenv
+requests
